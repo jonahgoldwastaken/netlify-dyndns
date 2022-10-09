@@ -6,6 +6,7 @@ builds:
       - CGO_ENABLED=0
     goos:
       - linux
+      - darwin
     goarch:
       - amd64
       - arm
@@ -14,12 +15,14 @@ builds:
     goarm:
       - 6
 archives:
-  - name_template: "{{.ProjectName}}_{{.Version}}_{{.Arch}}"
+  - name_template: "{{.ProjectName}}_{{.Version}}_{{.Os}}-{{.Arch}}"
     replacements:
-      amd64: 64bit
-      arm: arm32bit
-      arm64: arm64bit
-      386: 32bit
+      darwin: Darwin
+      linux: Linux
+      amd64: arm64
+      arm: arm
+      arm64: x86_64
+      386: x86
 dockers:
   - 
     use: buildx
