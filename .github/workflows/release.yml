@@ -40,7 +40,7 @@ jobs:
       - name: Build
         uses: goreleaser/goreleaser-action@v3
         with:
-          version: v0.155.0
+          version: latest
           args: --debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
