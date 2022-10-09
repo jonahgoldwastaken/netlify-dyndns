@@ -67,30 +67,29 @@ dockers:
     use: buildx
     dockerfile: Dockerfile
     build_flag_templates:
-      - "--platform=linux/arm/v7"
+      - "--platform=linux/386"
       - "--label=org.opencontainers.image.created={{.Date}}"
       - "--label=org.opencontainers.image.title={{.ProjectName}}"
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
       - "--label=org.opencontainers.image.version={{.Version}}"
     goos: linux
-    goarch: arm
-    goarm: 7 
+    goarch: 386
     image_templates:
-      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest-armv7
-      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-armv7
+      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest-i386
+      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-i386
 docker_manifests:
   - name_template: ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}
     image_templates:
       - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-amd64
       - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-arm64
       - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-armv6
-      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-armv7
+      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-i386
   - name_template: ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest
     image_templates:
       - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest-amd64
       - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest-arm64
       - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest-armv6
-      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest-armv7
+      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest-i386
 release:
   mode: append
   prerelease: auto
