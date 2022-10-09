@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -82,8 +81,6 @@ func Run(cmd *cobra.Command, names []string) {
 	ipAPI, _ = flags.GetString("ip-api")
 	cronSchedule, _ = flags.GetString("schedule")
 	runOnce, _ = flags.GetBool("run-once")
-
-	fmt.Printf("%s %s %s\n", token, domain, hostname)
 
 	nClient = netlify.NewNetlifyAPI(token)
 
