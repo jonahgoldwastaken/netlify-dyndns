@@ -54,35 +54,37 @@ jobs:
           docker manifest create \
             jonahgoldwastaken/netlify-dyndns:$DH_TAG \
             jonahgoldwastaken/netlify-dyndns:$DH_TAG-amd64 \
-            jonahgoldwastaken/netlify-dyndns:$DH_TAG-i386 \
-            jonahgoldwastaken/netlify-dyndns:$DH_TAG-armhf \
-            jonahgoldwastaken/netlify-dyndns:$DH_TAG-arm64v8
+            jonahgoldwastaken/netlify-dyndns:$DH_TAG-armv6 \
+            jonahgoldwastaken/netlify-dyndns:$DH_TAG-armv7 \
+            jonahgoldwastaken/netlify-dyndns:$DH_TAG-arm64
 
           docker manifest create \
             ghcr.io/jonahgoldwastaken/netlify-dyndns:$DH_TAG \
             ghcr.io/jonahgoldwastaken/netlify-dyndns:$DH_TAG-amd64 \
-            ghcr.io/jonahgoldwastaken/netlify-dyndns:$DH_TAG-i386 \
-            ghcr.io/jonahgoldwastaken/netlify-dyndns:$DH_TAG-armhf \
-            ghcr.io/jonahgoldwastaken/netlify-dyndns:$DH_TAG-arm64v8
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:$DH_TAG-armv6 \
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:$DH_TAG-armv7 \
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:$DH_TAG-arm64
       - name: Annotate manifest for version
         run: |
           for REPO in '' ghcr.io/ ; do
 
           docker manifest annotate \
             ${REPO}jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//') \
-            ${REPO}jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//')-i386 \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//')-armv6 \
             --os linux \
-            --arch 386
+            --arch arm
+            --variant v6
           
           docker manifest annotate \
             ${REPO}jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//') \
-            ${REPO}jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//')-armhf \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//')-armv7 \
             --os linux \
             --arch arm
+            --variant v7
       
           docker manifest annotate \
             ${REPO}jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//') \
-            ${REPO}jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//')-arm64v8 \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//')-arm64\
             --os linux \
             --arch arm64 \
             --variant v8
@@ -93,33 +95,35 @@ jobs:
           docker manifest create \
             jonahgoldwastaken/netlify-dyndns:latest \
             jonahgoldwastaken/netlify-dyndns:latest-amd64 \
-            jonahgoldwastaken/netlify-dyndns:latest-i386 \
-            jonahgoldwastaken/netlify-dyndns:latest-armhf \
-            jonahgoldwastaken/netlify-dyndns:latest-arm64v8
+            jonahgoldwastaken/netlify-dyndns:latest-armv6 \
+            jonahgoldwastaken/netlify-dyndns:latest-armv7 \
+            jonahgoldwastaken/netlify-dyndns:latest-arm64
           docker manifest create \
             ghcr.io/jonahgoldwastaken/netlify-dyndns:latest \
             ghcr.io/jonahgoldwastaken/netlify-dyndns:latest-amd64 \
-            ghcr.io/jonahgoldwastaken/netlify-dyndns:latest-i386 \
-            ghcr.io/jonahgoldwastaken/netlify-dyndns:latest-armhf \
-            ghcr.io/jonahgoldwastaken/netlify-dyndns:latest-arm64v8
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:latest-armv6 \
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:latest-armv7 \
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:latest-arm64
       - name: Annotate manifest for latest
         run: |
           for REPO in '' ghcr.io/ ; do
           docker manifest annotate \
             ${REPO}jonahgoldwastaken/netlify-dyndns:latest \
-            ${REPO}jonahgoldwastaken/netlify-dyndns:latest-i386 \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:latest-armv6 \
             --os linux \
-            --arch 386
+            --arch arm
+            --variant v6
 
           docker manifest annotate \
             ${REPO}jonahgoldwastaken/netlify-dyndns:latest \
-            ${REPO}jonahgoldwastaken/netlify-dyndns:latest-armhf \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:latest-armv7 \
             --os linux \
             --arch arm
+            --variant v7
             
           docker manifest annotate \
             ${REPO}jonahgoldwastaken/netlify-dyndns:latest \
-            ${REPO}jonahgoldwastaken/netlify-dyndns:latest-arm64v8 \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:latest-arm64 \
             --os linux \
             --arch arm64 \
             --variant v8
