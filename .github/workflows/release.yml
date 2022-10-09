@@ -1,0 +1,140 @@
+name: Release | Tagged
+
+on:
+  workflow_dispatch: {}
+  release:
+    types:
+      - released
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      CGO_ENABLED: 0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19.x
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DH_USER }}
+          password: ${{ secrets.DH_TOKEN }}
+      - name: Login to GHCR
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.BOT_USER }}
+          password: ${{ secrets.BOT_GHCR_PASS }}
+          registry: ghcr.io
+      - name: Build
+        uses: goreleaser/goreleaser-action@v3
+        with:
+          version: v0.155.0
+          args: --debug
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Enable experimental docker features
+        run: |
+          mkdir -p ~/.docker/ && \
+          echo '{"experimental": "enabled"}' > ~/.docker/config.json
+      - name: Create manifest for version
+        run: |
+          export DH_TAG=$(echo $TAG | sed 's/^v*//')
+          docker manifest create \
+            jonahgoldwastaken/netlify-dyndns:$DH_TAG \
+            jonahgoldwastaken/netlify-dyndns:$DH_TAG-amd64 \
+            jonahgoldwastaken/netlify-dyndns:$DH_TAG-i386 \
+            jonahgoldwastaken/netlify-dyndns:$DH_TAG-armhf \
+            jonahgoldwastaken/netlify-dyndns:$DH_TAG-arm64v8
+
+          docker manifest create \
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:$DH_TAG \
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:$DH_TAG-amd64 \
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:$DH_TAG-i386 \
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:$DH_TAG-armhf \
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:$DH_TAG-arm64v8
+      - name: Annotate manifest for version
+        run: |
+          for REPO in '' ghcr.io/ ; do
+
+          docker manifest annotate \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//') \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//')-i386 \
+            --os linux \
+            --arch 386
+          
+          docker manifest annotate \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//') \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//')-armhf \
+            --os linux \
+            --arch arm
+      
+          docker manifest annotate \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//') \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//')-arm64v8 \
+            --os linux \
+            --arch arm64 \
+            --variant v8
+            
+            done
+      - name: Create manifest for latest
+        run: |
+          docker manifest create \
+            jonahgoldwastaken/netlify-dyndns:latest \
+            jonahgoldwastaken/netlify-dyndns:latest-amd64 \
+            jonahgoldwastaken/netlify-dyndns:latest-i386 \
+            jonahgoldwastaken/netlify-dyndns:latest-armhf \
+            jonahgoldwastaken/netlify-dyndns:latest-arm64v8
+          docker manifest create \
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:latest \
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:latest-amd64 \
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:latest-i386 \
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:latest-armhf \
+            ghcr.io/jonahgoldwastaken/netlify-dyndns:latest-arm64v8
+      - name: Annotate manifest for latest
+        run: |
+          for REPO in '' ghcr.io/ ; do
+          docker manifest annotate \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:latest \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:latest-i386 \
+            --os linux \
+            --arch 386
+
+          docker manifest annotate \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:latest \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:latest-armhf \
+            --os linux \
+            --arch arm
+            
+          docker manifest annotate \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:latest \
+            ${REPO}jonahgoldwastaken/netlify-dyndns:latest-arm64v8 \
+            --os linux \
+            --arch arm64 \
+            --variant v8
+
+          done
+      - name: Push manifests to Dockerhub
+        env:
+          DOCKER_USER: ${{ secrets.DH_USER }}
+          DOCKER_TOKEN: ${{ secrets.DH_TOKEN }}
+        run: |
+          docker login -u $DH_USER -p $DH_TOKEN && \
+            docker manifest push jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//') && \
+            docker manifest push jonahgoldwastaken/netlify-dyndns:latest
+      - name: Push manifests to GitHub Container Registry
+        env:
+          DOCKER_USER: ${{ secrets.BOT_USER }}
+          DOCKER_TOKEN: ${{ secrets.BOT_GHCR_PASS }}
+        run: |
+          docker login -u $DH_USER -p $DH_TOKEN ghcr.io && \
+            docker manifest push ghcr.io/jonahgoldwastaken/netlify-dyndns:$(echo $TAG | sed 's/^v*//') && \
+            docker manifest push ghcr.io/jonahgoldwastaken/netlify-dyndns:latest

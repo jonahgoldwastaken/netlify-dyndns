@@ -1,0 +1,68 @@
+project_name: jonahgoldwastaken/netlify-dyndns
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - env:
+      - CGO_ENABLED=0
+    main: ./main.go
+    binary: netlify-dyndns
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm
+      - "386"
+      - arm64
+archives:
+  -
+    name_template: "{{.ProjectName}}_{{.Os}}.{{.Arch}}"
+    replacements:
+      darwin: macOS
+      linux: Linux
+      amd64: x86_64
+      arm: armhf
+      arm64: arm64v8
+      386: "386"
+dockers:
+  - 
+    build_flag_templates: ["--platform=linux/arm64/v8"]
+    goos: linux
+    goarch: arm64
+    goarm: ''
+    image_templates:
+      - jonahgoldwastaken/netlify-dyndns:latest-arm64
+      - jonahgoldwastaken/netlify-dyndns:{{ .Version }}-arm64
+      - ghr.io/jonahgoldwastaken/netlify-dyndns:latest-arm64
+      - ghr.io/jonahgoldwastaken/netlify-dyndns:{{ .Version }}-arm64
+  - 
+    build_flag_templates: ["--platform=linux/amd64"]
+    goos: linux
+    goarch: amd64
+    goarm: ''
+    image_templates:
+      - jonahgoldwastaken/netlify-dyndns:latest-amd64
+      - jonahgoldwastaken/netlify-dyndns:{{ .Version }}-amd64
+      - ghr.io/jonahgoldwastaken/netlify-dyndns:latest-amd64
+      - ghr.io/jonahgoldwastaken/netlify-dyndns:{{ .Version }}-amd64
+  - 
+    build_flag_templates: ["--platform=linux/arm/v6"]
+    goos: linux
+    goarch: armhf
+    goarm: "6" 
+    image_templates:
+      - jonahgoldwastaken/netlify-dyndns:latest-armhf
+      - jonahgoldwastaken/netlify-dyndns:{{ .Version }}-armhf
+      - ghr.io/jonahgoldwastaken/netlify-dyndns:latest-armhf
+      - ghr.io/jonahgoldwastaken/netlify-dyndns:{{ .Version }}-armhf
+  - 
+    build_flag_templates: ["--platform=linux/386"]
+    goos: linux
+    goarch: "386"
+    goarm: '' 
+    image_templates:
+      - jonahgoldwastaken/netlify-dyndns:latest-i386
+      - jonahgoldwastaken/netlify-dyndns:{{ .Version }}-i386
+      - ghr.io/jonahgoldwastaken/netlify-dyndns:latest-i386
+      - ghr.io/jonahgoldwastaken/netlify-dyndns:{{ .Version }}-i386

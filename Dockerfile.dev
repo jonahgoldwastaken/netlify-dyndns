@@ -1,0 +1,17 @@
+FROM golang:alpine as builder
+
+RUN apk add --no-cache \
+    alpine-sdk \
+    tzdata
+
+COPY . /netlify-dyndns
+
+RUN cd /netlify-dyndns && \
+    GO111MODULE=on CGO_ENABLED=0 GOOS=linux go build -a .
+
+FROM scratch
+
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=builder /netlify-dyndns/netlify-dyndns /netlify-dyndns
+
+ENTRYPOINT ["/netlify-dyndns"]
