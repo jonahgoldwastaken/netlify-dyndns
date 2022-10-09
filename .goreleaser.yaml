@@ -27,6 +27,7 @@ archives:
       386: "386"
 dockers:
   - 
+    use: buildx
     build_flag_templates: ["--platform=linux/arm64/v8"]
     goos: linux
     goarch: arm64
@@ -37,6 +38,7 @@ dockers:
       - ghr.io/jonahgoldwastaken/netlify-dyndns:latest-arm64
       - ghr.io/jonahgoldwastaken/netlify-dyndns:{{ .Version }}-arm64
   - 
+    use: buildx
     build_flag_templates: ["--platform=linux/amd64"]
     goos: linux
     goarch: amd64
@@ -47,6 +49,7 @@ dockers:
       - ghr.io/jonahgoldwastaken/netlify-dyndns:latest-amd64
       - ghr.io/jonahgoldwastaken/netlify-dyndns:{{ .Version }}-amd64
   - 
+    use: buildx
     build_flag_templates: ["--platform=linux/arm/v6"]
     goos: linux
     goarch: armhf
@@ -57,6 +60,7 @@ dockers:
       - ghr.io/jonahgoldwastaken/netlify-dyndns:latest-armhf
       - ghr.io/jonahgoldwastaken/netlify-dyndns:{{ .Version }}-armhf
   - 
+    use: buildx
     build_flag_templates: ["--platform=linux/386"]
     goos: linux
     goarch: "386"
