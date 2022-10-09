@@ -144,13 +144,13 @@ func runUpdate() {
 		return
 	}
 
-	err = nClient.DeleteDNSRecord(record.DNSZoneId, record.ID)
+	err = nClient.DeleteDNSRecord(record.DNSZoneID, record.ID)
 	if err != nil {
 		log.Error(err)
 		return
 	}
 
-	respRecord, err := nClient.CreateDNSRecord(record.DNSZoneId, newRecord)
+	respRecord, err := nClient.CreateDNSRecord(record.DNSZoneID, newRecord)
 
 	log.WithFields(log.Fields{
 		"record": respRecord,

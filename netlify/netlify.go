@@ -178,8 +178,8 @@ type DNSRecord struct {
 	Value      string `json:"value"`
 	TTL        int64  `json:"ttl"`
 	Priority   int64  `json:"priority"`
-	DNSZoneId  string `json:"dns_zone_id"`
-	SiteId     string `json:"site_id"`
+	DNSZoneID  string `json:"dns_zone_id"`
+	SiteID     string `json:"site_id"`
 	Flag       int64  `json:"flag"`
 	Tag        string `json:"tag"`
 	Tagged     bool   `json:"tagged"`
@@ -203,7 +203,7 @@ type DNSZone struct {
 	Records              []DNSRecord `json:"records"`
 	DNSServers           []string    `json:"dns_servers"`
 	AccountID            string      `json:"account_id"`
-	SiteId               string      `json:"site_id"`
+	SiteID               string      `json:"site_id"`
 	AccountSlug          string      `json:"account_slug"`
 	AccountName          string      `json:"account_name"`
 }
