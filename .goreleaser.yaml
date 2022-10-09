@@ -13,6 +13,12 @@ builds:
     goarm:
       - 6
       - 7
+archives:
+  - name_template: "{{.ProjectName}}_{{.Version}}_{{.Arch}}"
+    replacements:
+      amd64: 64bit
+      arm: arm32bit
+      arm64: arm64bit
 dockers:
   - 
     use: buildx
@@ -85,3 +91,6 @@ docker_manifests:
       - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest-arm64
       - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest-armv6
       - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest-armv7
+release:
+  mode: append
+  prerelease: auto
