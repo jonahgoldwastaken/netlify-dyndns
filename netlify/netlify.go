@@ -37,8 +37,8 @@ func (n *NetlifyAPI) GetDNSZoneForDomain(domain string) (DNSZone, error) {
 	return zone, nil
 }
 
-func (n *NetlifyAPI) GetDNSRecordsForZone(zoneId string) ([]DNSRecord, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("https://api.netlify.com/api/v1/dns_zones/%s/dns_records", zoneId), nil)
+func (n *NetlifyAPI) GetDNSRecordsForZone(zoneID string) ([]DNSRecord, error) {
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("https://api.netlify.com/api/v1/dns_zones/%s/dns_records", zoneID), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -75,8 +75,8 @@ func (n *NetlifyAPI) FindDNSForHostname(records []DNSRecord, hostname string) (D
 	return DNSRecord{}, nil
 }
 
-func (n *NetlifyAPI) DeleteDNSRecord(zoneId string, recordId string) error {
-	req, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("https://api.netlify.com/api/v1/dns_zones/%s/dns_records/%s", zoneId, recordId), nil)
+func (n *NetlifyAPI) DeleteDNSRecord(zoneID string, recordID string) error {
+	req, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("https://api.netlify.com/api/v1/dns_zones/%s/dns_records/%s", zoneID, recordID), nil)
 	if err != nil {
 		return err
 	}
@@ -92,12 +92,12 @@ func (n *NetlifyAPI) DeleteDNSRecord(zoneId string, recordId string) error {
 	return nil
 }
 
-func (n *NetlifyAPI) CreateDNSRecord(zoneId string, record DNSRecordInput) (*DNSRecord, error) {
+func (n *NetlifyAPI) CreateDNSRecord(zoneID string, record DNSRecordInput) (*DNSRecord, error) {
 	body, err := json.Marshal(record)
 	if err != nil {
 		return nil, err
 	}
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("https://api.netlify.com/api/v1/dns_zones/%s/dns_records", zoneId), bytes.NewReader(body))
+	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("https://api.netlify.com/api/v1/dns_zones/%s/dns_records", zoneID), bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}

@@ -21,7 +21,7 @@ var (
 	token        string
 	hostname     string
 	domain       string
-	ipApi        string
+	ipAPI        string
 	cronSchedule string
 	runOnce      bool
 	nClient      *netlify.NetlifyAPI
@@ -79,7 +79,7 @@ func Run(cmd *cobra.Command, names []string) {
 	token, _ = flags.GetString("token")
 	domain, _ = flags.GetString("domain")
 	hostname, _ = flags.GetString("hostname")
-	ipApi, _ = flags.GetString("ip-api")
+	ipAPI, _ = flags.GetString("ip-api")
 	cronSchedule, _ = flags.GetString("schedule")
 	runOnce, _ = flags.GetBool("run-once")
 
@@ -116,7 +116,7 @@ func runUpdate() {
 		log.Error(err)
 		return
 	}
-	ip, err := fetchPublicIP(ipApi)
+	ip, err := fetchPublicIP(ipAPI)
 	if err != nil {
 		log.Error(err)
 		return
