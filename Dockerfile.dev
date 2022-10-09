@@ -1,13 +1,14 @@
 FROM golang:alpine as builder
 
 RUN apk add --no-cache \
-    alpine-sdk \
-    tzdata
+	ca-certificates \ 
+	alpine-sdk \
+	tzdata
 
 COPY . /netlify-dyndns
 
 RUN cd /netlify-dyndns && \
-    GO111MODULE=on CGO_ENABLED=0 GOOS=linux go build -a .
+	CGO_ENABLED=0 GOOS=linux go build -a .
 
 FROM scratch
 

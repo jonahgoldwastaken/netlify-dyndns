@@ -1,6 +1,7 @@
 FROM golang:alpine AS builder
 
 RUN apk add --no-cache \
+	ca-certificates \ 
 	alpine-sdk \
 	git \
 	tzdata
