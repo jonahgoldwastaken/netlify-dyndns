@@ -2,7 +2,7 @@
 
 A little daemon that updates your preferred Netlify DNS settings when your public IP changes
 
-Usage inside a Docker container is preferred as it's easier to manage, but there are Linux binaries available with every [release](https://github.com/jonahgoldwastaken/netlify-dyndns/releases).
+Usage inside a Docker container is preferred as it's easier to manage, but there are Linux and macOS binaries available with every [release][releases].
 
 ## Requirements
 
@@ -59,10 +59,30 @@ $ docker run -d \
 
 ### Installation
 
-With the instructions below you can run `netlify-dyndns` through this command with environment variables either set or flags passed into the executable
+With the instructions below you can run `netlify-dyndns` through this command with environment variables either set or flags passed into the executable. Check out the [releases][releases] tab to find the tar name suitable for your system.
 
 ```bash
-$ curl -Lo netlify-dyndns.tar.gz "https://github.com/jonahgoldwastaken/netlify-dyndns/releases/latest/download/netlify-dyndns_${NEWEST_VERSION}_64bit.tar.gz"
+$ curl -Lo netlify-dyndns.tar.gz "https://github.com/jonahgoldwastaken/netlify-dyndns/releases/latest/download/netlify-dyndns_${NEWEST_VERSION}_{Darwin/Linux}_${ARCH}.tar.gz"
 $ sudo tar xf netlify-dyndns.tar.gz -C /usr/local/bin netlify-dyndns
-$ netlify-dyndns # Run without flags if en variables are set
 ```
+
+### Running
+
+```bash
+$ netlify-dyndns -h
+Automatically update Netlify DNS with your dynamic IP
+
+Usage:
+  netlify-dyndns [flags]
+
+Flags:
+      --domain string      The domain name registered at Netlify as shown on their dashboard and through their API
+  -h, --help               help for netlify-dyndns
+      --hostname string    The hostname to be put in the A record
+      --ip-api string      The API used to retrieve public IP Address of connected network, must respond with a text string body (default "https://api.ipify.org")
+      --log-level string   Maximum level that will be written to stderr (default "info")
+      --run-once           Only run the updater once, immediately exiting after
+  -S, --schedule string    Cron schedule the DNS check runs on (default "0 0 * * *")
+      --token string       The Netlify API token used to authenticate
+```
+[releases]: https://github.com/jonahgoldwastaken/netlify-dyndns/releases
