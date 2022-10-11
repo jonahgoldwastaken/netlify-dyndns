@@ -85,6 +85,7 @@ func Run(cmd *cobra.Command, names []string) {
 	nClient = netlify.NewNetlifyAPI(token)
 
 	if runOnce {
+		log.Debugln("Running DNS update once")
 		runUpdate()
 		os.Exit(0)
 		return
@@ -103,6 +104,13 @@ func runUpdate() {
 		log.Error(err)
 		return
 	}
+	log.
+		WithFields(log.Fields{
+			"domain":    domain,
+			"zone_id":   zone.ID,
+			"zone_name": zone.Name,
+		}).
+		Debug("Found zone for domain")
 	records, err := nClient.GetDNSRecordsForZone(zone.ID)
 	if err != nil {
 		log.Error(err)
@@ -113,12 +121,20 @@ func runUpdate() {
 		log.Error(err)
 		return
 	}
+	log.
+		WithFields(log.Fields{
+			"id":       record.ID,
+			"hostname": record.Hostname,
+			"value":    record.Value,
+			"ttl":      record.TTL,
+		}).
+		Debugf("DNS Record fetched from Netlify")
 	ip, err := fetchPublicIP(ipAPI)
 	if err != nil {
 		log.Error(err)
 		return
 	}
-
+	log.Debugf("Public IP address: %s\n", ip)
 	if record.Value == ip {
 		log.Info("Current DNS record has the same value as your public IP, aborting update..")
 		return
@@ -132,15 +148,23 @@ func runUpdate() {
 	}
 
 	if (record == netlify.DNSRecord{}) {
+		log.
+			WithFields(log.Fields{
+				"hostname": newRecord.Hostname,
+				"value":    newRecord.Value,
+			}).
+			Debug("Creating brand new DNS record")
 		respRecord, err := nClient.CreateDNSRecord(zone.ID, newRecord)
 		if err != nil {
 			log.Error(err)
 			return
 		}
 
-		log.WithFields(log.Fields{
-			"record": respRecord,
-		}).Info("Succesfully added new record")
+		log.
+			WithFields(log.Fields{
+				"record": respRecord.ID,
+			}).
+			Info("Succesfully added new record")
 		return
 	}
 
@@ -158,6 +182,7 @@ func runUpdate() {
 }
 
 func runUpdateOnSchedule(cmd *cobra.Command, lock chan bool) error {
+	log.Debugln("Initialising update schedule")
 	if lock == nil {
 		lock = make(chan bool, 1)
 		lock <- true
@@ -168,6 +193,7 @@ func runUpdateOnSchedule(cmd *cobra.Command, lock chan bool) error {
 		select {
 		case v := <-lock:
 			defer func() { lock <- v }()
+			log.Debugln("Running update")
 			runUpdate()
 		default:
 			log.Debug("Update skipped as another was already in progress")
