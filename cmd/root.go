@@ -1,3 +1,4 @@
+// Package cmd contains the root command runnable inside your CLI
 package cmd
 
 import (
@@ -23,9 +24,10 @@ var (
 	ipAPI        string
 	cronSchedule string
 	runOnce      bool
-	nClient      *netlify.NetlifyAPI
+	nClient      *netlify.API
 )
 
+// NewRootCommand creates a new root command to run the main application
 func NewRootCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:    "netlify-dyndns",
@@ -40,12 +42,14 @@ func init() {
 	flags.Register(rootCmd)
 }
 
+// Execute executues the root command
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatal(err)
 	}
 }
 
+// PreRun runs on the root command pre-run hook, setting up the application to be able to run properly
 func PreRun(cmd *cobra.Command, _ []string) {
 	f := cmd.PersistentFlags()
 	if enabled, _ := f.GetBool("no-color"); enabled {
@@ -70,6 +74,7 @@ func PreRun(cmd *cobra.Command, _ []string) {
 	}
 }
 
+// Run runs on the root command run hook, containing the main business logic for the application
 func Run(cmd *cobra.Command, names []string) {
 	runLock := make(chan bool, 1)
 	runLock <- true
@@ -82,7 +87,7 @@ func Run(cmd *cobra.Command, names []string) {
 	cronSchedule, _ = flags.GetString("schedule")
 	runOnce, _ = flags.GetBool("run-once")
 
-	nClient = netlify.NewNetlifyAPI(token)
+	nClient = netlify.NewAPI(token)
 
 	if runOnce {
 		log.Debugln("Running DNS update once")

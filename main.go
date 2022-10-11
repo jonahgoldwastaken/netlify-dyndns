@@ -9,6 +9,7 @@ import (
 func init() {
 	log.SetLevel(log.InfoLevel)
 }
+
 func main() {
 	cmd.Execute()
 }

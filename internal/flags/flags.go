@@ -1,3 +1,4 @@
+// Package flags handles CLI flags passable into netlify-dyndns
 package flags
 
 import (
@@ -7,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Defaults sets defaults for all flags/environment variables
 func Defaults() {
 	viper.AutomaticEnv()
 	viper.SetDefault("ND_NETLIFY_TOKEN", "")
@@ -18,6 +20,7 @@ func Defaults() {
 	viper.SetDefault("ND_RUN_ONCE", false)
 }
 
+// Register registers all possible flags/options
 func Register(rootCmd *cobra.Command) {
 	flags := rootCmd.PersistentFlags()
 
@@ -30,8 +33,8 @@ func Register(rootCmd *cobra.Command) {
 	flags.Bool("run-once", viper.GetBool("ND_RUN_ONCE"), "Only run the updater once, immediately exiting after")
 }
 
+// TestRequired tests if any of the required flags/env variabels are absent
 func TestRequired(rootCmd *cobra.Command) error {
-
 	flags := rootCmd.PersistentFlags()
 
 	if str, err := flags.GetString("token"); err != nil || str == "" {

@@ -1,9 +1,9 @@
+// Package netlify contains code to make requests to the Netlify DNS API
 package netlify
 
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -11,12 +11,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type NetlifyAPI struct {
+// API makes it possible to make calls to the Netlify DNS API
+type API struct {
 	token  string
 	client http.Client
 }
 
-func (n *NetlifyAPI) GetDNSZoneForDomain(domain string) (DNSZone, error) {
+// GetDNSZoneForDomain fetches the DNS zone from the Netlify API with the matching domain name
+func (n *API) GetDNSZoneForDomain(domain string) (DNSZone, error) {
 	dnsZones, err := n.getDNSZones(domain)
 	if err != nil {
 		return DNSZone{}, err
@@ -37,7 +39,8 @@ func (n *NetlifyAPI) GetDNSZoneForDomain(domain string) (DNSZone, error) {
 	return zone, nil
 }
 
-func (n *NetlifyAPI) GetDNSRecordsForZone(zoneID string) ([]DNSRecord, error) {
+// GetDNSRecordsForZone fetches all DNS records from the Netlify API in the given DNS zone
+func (n *API) GetDNSRecordsForZone(zoneID string) ([]DNSRecord, error) {
 	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("https://api.netlify.com/api/v1/dns_zones/%s/dns_records", zoneID), nil)
 	if err != nil {
 		return nil, err
@@ -53,7 +56,7 @@ func (n *NetlifyAPI) GetDNSRecordsForZone(zoneID string) ([]DNSRecord, error) {
 		if err != nil {
 			return nil, err
 		}
-		return nil, errors.New(fmt.Sprintf("response error: %v", string(body)))
+		return nil, fmt.Errorf("response error: %v", string(body))
 	}
 	decoder := json.NewDecoder(res.Body)
 	var records []DNSRecord
@@ -65,7 +68,8 @@ func (n *NetlifyAPI) GetDNSRecordsForZone(zoneID string) ([]DNSRecord, error) {
 	return records, nil
 }
 
-func (n *NetlifyAPI) FindDNSForHostname(records []DNSRecord, hostname string) (DNSRecord, error) {
+// FindDNSForHostname finds a certain DNS record in a list by matching the hostname with the one given
+func (n *API) FindDNSForHostname(records []DNSRecord, hostname string) (DNSRecord, error) {
 	for _, v := range records {
 		if v.Hostname == hostname {
 			return v, nil
@@ -75,7 +79,8 @@ func (n *NetlifyAPI) FindDNSForHostname(records []DNSRecord, hostname string) (D
 	return DNSRecord{}, nil
 }
 
-func (n *NetlifyAPI) DeleteDNSRecord(zoneID string, recordID string) error {
+// DeleteDNSRecord deletes the DNS Record with the given ID
+func (n *API) DeleteDNSRecord(zoneID string, recordID string) error {
 	req, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("https://api.netlify.com/api/v1/dns_zones/%s/dns_records/%s", zoneID, recordID), nil)
 	if err != nil {
 		return err
@@ -92,7 +97,8 @@ func (n *NetlifyAPI) DeleteDNSRecord(zoneID string, recordID string) error {
 	return nil
 }
 
-func (n *NetlifyAPI) CreateDNSRecord(zoneID string, record DNSRecordInput) (*DNSRecord, error) {
+// CreateDNSRecord creates a DNS record for the given some with the given record data
+func (n *API) CreateDNSRecord(zoneID string, record DNSRecordInput) (*DNSRecord, error) {
 	body, err := json.Marshal(record)
 	if err != nil {
 		return nil, err
@@ -121,7 +127,7 @@ func (n *NetlifyAPI) CreateDNSRecord(zoneID string, record DNSRecordInput) (*DNS
 	return &newRecord, nil
 }
 
-func (n *NetlifyAPI) getDNSZones(domain string) ([]DNSZone, error) {
+func (n *API) getDNSZones(domain string) ([]DNSZone, error) {
 	req, err := http.NewRequest(http.MethodGet, "https://api.netlify.com/api/v1/dns_zones", nil)
 	if err != nil {
 		return nil, err
@@ -144,15 +150,15 @@ func (n *NetlifyAPI) getDNSZones(domain string) ([]DNSZone, error) {
 	return dnsZones, nil
 }
 
-func (n *NetlifyAPI) handleErrorResponse(res *http.Response) error {
+func (n *API) handleErrorResponse(res *http.Response) error {
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return err
 	}
-	return errors.New(fmt.Sprintf("response error - %s - %v - %v", res.Request.URL.Path, res.StatusCode, body))
+	return fmt.Errorf("response error - %s - %v - %v", res.Request.URL.Path, res.StatusCode, body)
 }
 
-func (n *NetlifyAPI) handleRequest(req *http.Request) (*http.Response, error) {
+func (n *API) handleRequest(req *http.Request) (*http.Response, error) {
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", n.token))
 	req.Header.Add("Accept", "application/json")
 	res, err := n.client.Do(req)
@@ -164,13 +170,15 @@ func (n *NetlifyAPI) handleRequest(req *http.Request) (*http.Response, error) {
 	return res, nil
 }
 
-func NewNetlifyAPI(token string) *NetlifyAPI {
-	return &NetlifyAPI{
+// NewAPI creates a new API instance
+func NewAPI(token string) *API {
+	return &API{
 		token:  token,
 		client: http.Client{},
 	}
 }
 
+// DNSRecord contains all DNS record data provided by the Netlify DNS API
 type DNSRecord struct {
 	ID         string `json:"id"`
 	Hostname   string `json:"hostname"`
@@ -185,6 +193,7 @@ type DNSRecord struct {
 	Tagged     bool   `json:"tagged"`
 }
 
+// DNSRecordInput contains all data necessary to create a `A` record with the Netlify APi
 type DNSRecordInput struct {
 	RecordType string `json:"type"`
 	Hostname   string `json:"hostname"`
@@ -192,6 +201,7 @@ type DNSRecordInput struct {
 	TTL        int64  `json:"ttl"`
 }
 
+// DNSZone contains all DNS zone data provided by the Netlify DNS API
 type DNSZone struct {
 	ID                   string      `json:"id"`
 	Name                 string      `json:"name"`
