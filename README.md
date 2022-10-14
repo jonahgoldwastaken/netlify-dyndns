@@ -41,10 +41,10 @@ $ docker run -d \
 $ docker image pull ghcr.io/jonahgoldwastaken/netlify-dyndns:latest
 $ docker run -d \
   --name netlify-dyndns \
+	-e "NETLIFY_TOKEN=top_secret" \
   ghcr.io/jonahgoldwastaken/netlify-dyndns \
 
   # Required
-  "--token=top_secret" \              # API key you created inside the Netlify Admin Panel
   "--domain=jonahmeijers.nl" \        # The domain name as displayed inside the Netlify Admin Panel
   "--hostname=home.jonahmeijers.nl" \ # The domain that'll be entered as the hostname on the DNS record
 
@@ -76,14 +76,13 @@ Usage:
   netlify-dyndns [flags]
 
 Flags:
-      --domain string      The domain name registered at Netlify as shown on their dashboard and through their API
+  -d, --domain string      The domain name registered at Netlify as shown on their dashboard and through their API
   -h, --help               help for netlify-dyndns
-      --hostname string    The hostname to be put in the A record
+  -H, --hostname string    The hostname to be put in the A record
       --ip-api string      The API used to retrieve public IP Address of connected network, must respond with a text string body (default "https://api.ipify.org")
       --log-level string   Maximum level that will be written to stderr (default "info")
       --run-once           Only run the updater once, immediately exiting after
   -S, --schedule string    Cron schedule the DNS check runs on (default "0 0 * * *")
-      --token string       The Netlify API token used to authenticate
 ```
 
 [releases]: https://github.com/jonahgoldwastaken/netlify-dyndns/releases
