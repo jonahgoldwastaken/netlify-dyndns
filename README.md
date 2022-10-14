@@ -7,7 +7,7 @@ Usage inside a Docker container is preferred as it's easier to manage, but there
 ## Requirements
 
 - Either a:
-	1. Linux-based operating system;
+	1. macOS or a Linux-based operating system;
 	2. Or a Docker installation (Preferably).
 - A network connection that isn't routed in any particular way through a proxy or VPN.
 
@@ -21,7 +21,7 @@ $ docker run -d \
   --name netlify-dyndns \
 
   # Required
-  -e "ND_NETLIFY_TOKEN=top_secret" \             # API key you created inside the Netlify Admin Panel
+  -e "NETLIFY_TOKEN=top_secret" \                # API key you created inside the Netlify Admin Panel
   -e "ND_NETLIFY_DOMAIN_NAME=jonahmeijers.nl" \  # The domain name as displayed inside the Netlify Admin Panel
   -e "ND_RECORD_HOSTNAME=home.jonahmeijers.nl" \ # The domain that'll be entered as the hostname on the DNS record
 
@@ -85,4 +85,5 @@ Flags:
   -S, --schedule string    Cron schedule the DNS check runs on (default "0 0 * * *")
       --token string       The Netlify API token used to authenticate
 ```
+
 [releases]: https://github.com/jonahgoldwastaken/netlify-dyndns/releases

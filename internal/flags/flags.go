@@ -11,7 +11,7 @@ import (
 // Defaults sets defaults for all flags/environment variables
 func Defaults() {
 	viper.AutomaticEnv()
-	viper.SetDefault("ND_NETLIFY_TOKEN", "")
+	viper.SetDefault("NETLIFY_TOKEN", "")
 	viper.SetDefault("ND_NETLIFY_DOMAIN_NAME", "")
 	viper.SetDefault("ND_RECORD_HOSTNAME", "")
 	viper.SetDefault("ND_IP_API", "https://api.ipify.org")
@@ -24,7 +24,7 @@ func Defaults() {
 func Register(rootCmd *cobra.Command) {
 	flags := rootCmd.PersistentFlags()
 
-	flags.String("token", viper.GetString("ND_NETLIFY_TOKEN"), "The Netlify API token used to authenticate")
+	flags.String("token", viper.GetString("NETLIFY_TOKEN"), "The Netlify API token used to authenticate")
 	flags.String("domain", viper.GetString("ND_NETLIFY_DOMAIN_NAME"), "The domain name registered at Netlify as shown on their dashboard and through their API")
 	flags.String("hostname", viper.GetString("ND_RECORD_HOSTNAME"), "The hostname to be put in the A record")
 	flags.String("ip-api", viper.GetString("ND_IP_API"), "The API used to retrieve public IP Address of connected network, must respond with a text string body")
