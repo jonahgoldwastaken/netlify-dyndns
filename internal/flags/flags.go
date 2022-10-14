@@ -25,7 +25,7 @@ func Register(rootCmd *cobra.Command) {
 	flags := rootCmd.PersistentFlags()
 
 	flags.StringP("domain", "d", viper.GetString("ND_NETLIFY_DOMAIN_NAME"), "The domain name registered at Netlify as shown on their dashboard and through their API")
-	flags.StringP("hostname", "h", viper.GetString("ND_RECORD_HOSTNAME"), "The hostname to be put in the A record")
+	flags.StringP("hostname", "H", viper.GetString("ND_RECORD_HOSTNAME"), "The hostname to be put in the A record")
 	flags.StringP("schedule", "S", viper.GetString("ND_SCHEDULE"), "Cron schedule the DNS check runs on")
 	flags.String("log-level", viper.GetString("ND_LOG_LEVEL"), "Maximum level that will be written to stderr")
 	flags.String("ip-api", viper.GetString("ND_IP_API"), "The API used to retrieve public IP Address of connected network, must respond with a text string body")
