@@ -38,7 +38,7 @@ func TestRequired(rootCmd *cobra.Command) error {
 	flags := rootCmd.PersistentFlags()
 
 	if str, err := flags.GetString("token"); err != nil || str == "" {
-		return errors.New("'token'/$ND_NETLIFY_TOKEN not set")
+		return errors.New("'token'/$NETLIFY_TOKEN not set")
 	}
 	if str, err := flags.GetString("domain"); err != nil || str == "" {
 		return errors.New("'domain'/$ND_NETLIFY_DOMAIN_NAME not set")
