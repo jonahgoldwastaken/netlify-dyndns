@@ -13,6 +13,7 @@ import (
 	"github.com/robfig/cron/v3"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var rootCmd = NewRootCommand()
@@ -52,15 +53,9 @@ func Execute() {
 // PreRun runs on the root command pre-run hook, setting up the application to be able to run properly
 func PreRun(cmd *cobra.Command, _ []string) {
 	f := cmd.PersistentFlags()
-	if enabled, _ := f.GetBool("no-color"); enabled {
-		log.SetFormatter(&log.TextFormatter{
-			DisableColors: true,
-		})
-	} else {
-		log.SetFormatter(&log.TextFormatter{
-			EnvironmentOverrideColors: true,
-		})
-	}
+	log.SetFormatter(&log.TextFormatter{
+		EnvironmentOverrideColors: true,
+	})
 
 	rawLogLevel, _ := f.GetString(`log-level`)
 	if logLevel, err := log.ParseLevel(rawLogLevel); err != nil {
@@ -80,7 +75,7 @@ func Run(cmd *cobra.Command, names []string) {
 	runLock <- true
 
 	flags := cmd.PersistentFlags()
-	token, _ = flags.GetString("token")
+	token = viper.GetString("NETLIFY_TOKEN")
 	domain, _ = flags.GetString("domain")
 	hostname, _ = flags.GetString("hostname")
 	ipAPI, _ = flags.GetString("ip-api")
