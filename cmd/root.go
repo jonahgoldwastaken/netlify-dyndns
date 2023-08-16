@@ -2,7 +2,7 @@
 package cmd
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"os/signal"
@@ -223,7 +223,7 @@ func fetchPublicIP(api string) (string, error) {
 		return "", err
 	}
 	defer res.Body.Close()
-	b, err := ioutil.ReadAll(res.Body)
+	b, err := io.ReadAll(res.Body)
 	if err != nil {
 		return "", err
 	}
