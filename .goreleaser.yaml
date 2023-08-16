@@ -11,20 +11,13 @@ builds:
       - amd64
       - arm
       - arm64
-      - 386
+      - "386"
     goarm:
-      - 6
+      - "6"
 archives:
   - name_template: "{{.ProjectName}}_{{.Version}}_{{.Os}}-{{.Arch}}"
-    replacements:
-      darwin: Darwin
-      linux: Linux
-      amd64: arm64
-      arm: arm
-      arm64: x86_64
-      386: x86
 dockers:
-  - 
+  -
     use: buildx
     dockerfile: Dockerfile
     build_flag_templates:
@@ -40,7 +33,7 @@ dockers:
       - jonahgoldwastaken/{{.ProjectName}}:{{ .Version }}-arm64
       - ghcr.io/jonahgoldwastaken/{{.ProjectName}}:latest-arm64
       - ghcr.io/jonahgoldwastaken/{{.ProjectName}}:{{ .Version }}-arm64
-  - 
+  -
     use: buildx
     dockerfile: Dockerfile
     build_flag_templates:
@@ -56,7 +49,7 @@ dockers:
       - jonahgoldwastaken/{{.ProjectName}}:{{ .Version }}-amd64
       - ghcr.io/jonahgoldwastaken/{{.ProjectName}}:latest-amd64
       - ghcr.io/jonahgoldwastaken/{{.ProjectName}}:{{ .Version }}-amd64
-  - 
+  -
     use: buildx
     dockerfile: Dockerfile
     build_flag_templates:
@@ -67,13 +60,13 @@ dockers:
       - "--label=org.opencontainers.image.version={{.Version}}"
     goos: linux
     goarch: arm
-    goarm: 6 
+    goarm: 6
     image_templates:
       - jonahgoldwastaken/{{.ProjectName}}:latest-armv6
       - jonahgoldwastaken/{{.ProjectName}}:{{ .Version }}-armv6
       - ghcr.io/jonahgoldwastaken/{{.ProjectName}}:latest-armv6
       - ghcr.io/jonahgoldwastaken/{{.ProjectName}}:{{ .Version }}-armv6
-  - 
+  -
     use: buildx
     dockerfile: Dockerfile
     build_flag_templates:
@@ -83,7 +76,7 @@ dockers:
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
       - "--label=org.opencontainers.image.version={{.Version}}"
     goos: linux
-    goarch: 386
+    goarch: "386"
     image_templates:
       - jonahgoldwastaken/{{ .ProjectName }}:latest-i386
       - jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-i386
